@@ -1,0 +1,55 @@
+version: '3.7'
+
+services:
+  app:
+    container_name: quickstart_app
+    build: .docker/app
+    environment:
+      XDEBUG_CONFIG: "mode=off"
+      XDEBUG_MODE: "debug,develop"
+      PHP_IDE_CONFIG: "serverName=quickstart"
+    volumes:
+      - ./:/var/www
+      - ./.docker/app/.bashrc:/home/www-data/.bashrc
+  nginx:
+    container_name: quickstart_nginx
+    build: ./.docker/nginx
+    volumes:
+      - ./:/var/www
+    ports:
+      - "80:80"
+    links:
+      - app
+  db:
+    image: postgres:14.1-alpine
+    restart: always
+    container_name: quickstart_db
+    ports:
+      - 5432:5432
+    environment:
+      POSTGRES_USER: base
+      POSTGRES_PASSWORD: base
+      POSTGRES_DB: base
+    volumes:
+      - quickstart_pgdata:/var/lib/postgresql/data
+    links:
+      - app
+
+  redis:
+    image: redis:latest
+    container_name: quickstart_redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - quickstart_redis:/data
+    links:
+      - app
+
+  mailer:
+    image: schickling/mailcatcher
+    container_name: quickstart_mailer
+    ports: ["1025", "1080"]
+
+volumes:
+  quickstart_pgdata:
+  quickstart_redis:
