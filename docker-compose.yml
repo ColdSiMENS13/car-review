@@ -2,28 +2,28 @@ version: '3.7'
 
 services:
   app:
-    container_name: quickstart_app
+    container_name: car_review_quickstart_app
     build: .docker/app
     environment:
-      XDEBUG_CONFIG: "mode=off"
+      XDEBUG_CONFIG: "mode=on"
       XDEBUG_MODE: "debug,develop"
       PHP_IDE_CONFIG: "serverName=quickstart"
     volumes:
       - ./:/var/www
       - ./.docker/app/.bashrc:/home/www-data/.bashrc
   nginx:
-    container_name: quickstart_nginx
+    container_name: car_review_quickstart_nginx
     build: ./.docker/nginx
     volumes:
       - ./:/var/www
     ports:
-      - "80:80"
+      - "85:80"
     links:
       - app
   db:
     image: postgres:14.1-alpine
     restart: always
-    container_name: quickstart_db
+    container_name: car_review_quickstart_db
     ports:
       - 5432:5432
     environment:
@@ -37,7 +37,7 @@ services:
 
   redis:
     image: redis:latest
-    container_name: quickstart_redis
+    container_name: car_review_quickstart_redis
     ports:
       - "6379:6379"
     volumes:
@@ -47,7 +47,7 @@ services:
 
   mailer:
     image: schickling/mailcatcher
-    container_name: quickstart_mailer
+    container_name: car_review_quickstart_mailer
     ports: ["1025", "1080"]
 
 volumes:
